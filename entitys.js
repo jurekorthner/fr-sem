@@ -11,11 +11,11 @@ class Player extends Entity {
 
     tick() {
         if (keyIsDown(RIGHT_ARROW)) {
-            this.position.x += 5;
+            this.position.x += 10;
 
         }
 
-        if (keyIsDown(LEFT_ARROW)) this.position.x -= 5;
+        if (keyIsDown(LEFT_ARROW)) this.position.x -= 10;
 
     }
 
@@ -29,8 +29,9 @@ class Player extends Entity {
 }
 
 class Ball extends Entity {
-    constructor(position, size, initialVelocity) {
+    constructor(position, size, initialVelocity, img) {
         super(position, size);
+        this.img = img;
         this.velocity = initialVelocity;
     }
 
@@ -40,7 +41,7 @@ class Ball extends Entity {
 
     draw() {
         fill(80, 71, 181);
-        circle(this.position.x, this.position.y, this.size.x);
+        image(this.img, this.position.x, this.position.y, this.size.x, this.size.y);
     }
 
     phys() {
@@ -65,19 +66,46 @@ class Ball extends Entity {
         if (collideLineCircle(player.position.x, player.position.y, player.position.x + player.size.x, player.position.y, this.position.x, this.position.y, this.size.x)) {
             this.velocity.reflect(new p5.Vector(0, 1));
             this.velocity.rotate(0.2);
+       }
 
-        }
-
-        fill(200, 10, 10, 100)
-        rect(0, height * 0.95, width, height);
         if (collideRectCircle(0, height * 0.95, width, height, this.position.x, this.position.y, this.size.x)) {
             console.log("collideRectCircle");
-            health--;
-            gameManager.reset();
-
+            health--; 
+            gameManager.reset(); 
         }
 
 
 
     }
+}
+
+class Tile extends Entity {
+    constructor(position, size, img, row) {
+        super(position, size);
+        this.img = img;
+        this.row = row;
+    }    
+    draw() {        
+        //tint(this.row * 10);
+        image(this.img, this.position.x, this.position.y, this.size.x, this.size.y);        
+    }
+
+    phys() {        
+        var hit = collideRectCircle(this.position.x, this.position.y, this.size.x, this.size.y, ball.position.x, ball.position.y, ball.size.x);
+        
+        if(hit) {
+            ball.velocity.reflect(new p5.Vector(0, 1));
+            var e = gameManager.entitys.indexOf(this)
+            gameManager.entitys.splice(e, 1);
+            gameManager.score += 1;
+            //console.log(e);
+            console.log(gameManager.entitys.length);
+            if(gameManager.entitys.length <= 2) {                
+                gameManager.lvlUp();
+                
+            }
+        }
+        
+    }
+
 }
