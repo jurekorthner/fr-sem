@@ -1,6 +1,4 @@
 let paddelImg;
-let tile1Img, tile2Img, tile3Img, tile4Img, tile5Img, tile6Img, tile7Img, tile8Img, tile9Img, tile10Img;
-let tiles;
 let font;
 let heartImg;
 let ballImg;
@@ -9,6 +7,7 @@ let player;
 let ball;
 
 let gameManager;
+let uiManager;
 
 let health;
 
@@ -18,35 +17,22 @@ function preload() {
   paddelImg = loadImage('src/paddel.png');
   ballImg = loadImage('src/ball.png')
   heartImg = loadImage('src/heart.png');
-
-  tile1Img = loadImage('src/tile (1).png')
-  tile2Img = loadImage('src/tile (2).png')
-  tile3Img = loadImage('src/tile (3).png')
-  tile4Img = loadImage('src/tile (4).png')
-  tile5Img = loadImage('src/tile (5).png')
-  tile6Img = loadImage('src/tile (6).png')
-  tile7Img = loadImage('src/tile (7).png')
-  tile8Img = loadImage('src/tile (8).png')
-  tile9Img = loadImage('src/tile (9).png')
-  tile10Img = loadImage('src/tile (10).png')
-
-  tiles = [tile1Img, tile2Img, tile3Img, tile4Img, tile5Img, tile6Img, tile7Img, tile8Img, tile9Img, tile10Img];
-
-
-
   font = loadFont('src/ps.ttf');
+
+  uiManager = new UIManager();  
+  uiManager.preload();
 }
 
 function setup() {
   textFont(font);  
   collideDebug(true);
 
-  health = 3;
-
-  let canvas = createCanvas(windowWidth, windowHeight);
+ let canvas = createCanvas(windowWidth, windowHeight);
   canvas.position(0, 0);
+  
+  uiManager.setup();
 
-  gameManager = new GameManager();
+  gameManager = new GameManager(3);
   gameManager.setup();
 
   //stroke(255);

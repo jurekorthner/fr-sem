@@ -5,6 +5,7 @@ class GameManager {
         this.ended = false;
         this.level = 1;
         this.score = 0;
+        this.health = health;
     }
 
     register(e) {
@@ -19,7 +20,7 @@ class GameManager {
 
         ball = new Ball(new p5.Vector(windowWidth / 2, windowHeight * 0.5),
             new p5.Vector(30, 30),
-            new p5.Vector(0, -7),
+            new p5.Vector(random(-0.1, 0.1), -7),
             ballImg);
 
         this.register(player);
@@ -34,9 +35,13 @@ class GameManager {
         var padding = (windowWidth - nX * 85) / 2;
 
 
-        for (var i = 0; i < nX; i++) {
+        for (var i = 0; i < nX; i++) { 
+            var n = 0;           
             for (var k = 0; k < this.level + 2; k++) {
-                var tile = new Tile(new p5.Vector(padding + i * spacing, 95 + k * 36), new p5.Vector(75, 28), tiles[k], k);
+                if(n >= 10) n = 0;
+                console.log("123")
+                var tile = new Tile(new p5.Vector(padding + i * spacing, 95 + k * 36), new p5.Vector(75, 28), uiManager.tileImgs[n], k);
+                n++;
 
                 gameManager.register(tile);
             }
@@ -107,6 +112,35 @@ class Entity {
     }
 
     phys() {
+
+    }
+}
+
+class UIManager {   
+    constructor() {
+        this.tileImgs = new Array();
+        this.font = loadFont('src/ps.ttf');
+    }
+
+    preload() {
+        this.tileImgs[0] = loadImage('src/tile_1.png')
+        this.tileImgs[1] = loadImage('src/tile_2.png')
+        this.tileImgs[2] = loadImage('src/tile_3.png')
+        this.tileImgs[3] = loadImage('src/tile_4.png')
+        this.tileImgs[4] = loadImage('src/tile_5.png')
+        this.tileImgs[5] = loadImage('src/tile_6.png')
+        this.tileImgs[6] = loadImage('src/tile_7.png')
+        this.tileImgs[7] = loadImage('src/tile_8.png')
+        this.tileImgs[8] = loadImage('src/tile_9.png')
+        this.tileImgs[9] = loadImage('src/tile_10.png')
+    }
+
+    setup() {
+        textFont(this.font);
+
+    }
+
+    draw() {
 
     }
 }
