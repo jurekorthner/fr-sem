@@ -3,7 +3,7 @@ class GameManager {
         this.entitys = new Array();
         this.started = false;
         this.ended = false;
-        this.level = 1;
+        this.level = 2;
         this.score = 0;
         this.health = health;
     }
