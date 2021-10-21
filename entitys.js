@@ -1,7 +1,7 @@
 class Player extends Entity {
     constructor(position, size, img) {
         super(position, size);
-        this.img = img;
+        this.img = img;       
     }
 
     preload() {
@@ -10,12 +10,12 @@ class Player extends Entity {
     }
 
     tick() {
-        if (keyIsDown(RIGHT_ARROW)) {
-            this.position.x += 10;
+        this.size.x = clamp(128 - gameManager.level * 8, 40, 120);
 
-        }
-
-        if (keyIsDown(LEFT_ARROW)) this.position.x -= 10;
+        if (keyIsDown(RIGHT_ARROW) && !(this.position.x + this.size.x > width)) this.position.x += 10 + gameManager.level * 2;
+        if (keyIsDown(LEFT_ARROW) && !(this.position.x < 0)) this.position.x -= 10 + gameManager.level * 2;        
+        
+        if(gameManager.mouseInput) this.position.x += movedX;        
 
     }
 
@@ -41,7 +41,7 @@ class Ball extends Entity {
 
     draw() {
         fill(80, 71, 181);
-        image(this.img, this.position.x, this.position.y, this.size.x, this.size.y);
+        image(this.img, this.position.x - this.size.x / 2, this.position.y - this.size.y / 2, this.size.x, this.size.y);
     }
 
     phys() {
@@ -66,12 +66,12 @@ class Ball extends Entity {
         if (collideLineCircle(player.position.x, player.position.y, player.position.x + player.size.x, player.position.y, this.position.x, this.position.y, this.size.x)) {
             this.velocity.reflect(new p5.Vector(0, 1));
             this.velocity.rotate(0.2);
-       }
+        }
 
         if (collideRectCircle(0, height * 0.95, width, height, this.position.x, this.position.y, this.size.x)) {
             console.log("collideRectCircle");
-            health--; 
-            gameManager.reset(); 
+            //gameManager.health--;
+            //gameManager.reset();
         }
 
 
@@ -84,28 +84,25 @@ class Tile extends Entity {
         super(position, size);
         this.img = img;
         this.row = row;
-    }    
-    draw() {        
+    }
+    draw() {
         //tint(this.row * 10);
-        image(this.img, this.position.x, this.position.y, this.size.x, this.size.y);        
+        image(this.img, this.position.x, this.position.y, this.size.x, this.size.y);
     }
 
-    phys() {        
+    phys() {
         var hit = collideRectCircle(this.position.x, this.position.y, this.size.x, this.size.y, ball.position.x, ball.position.y, ball.size.x);
-        
-        if(hit) {
+
+        if (hit) {
             ball.velocity.reflect(new p5.Vector(0, 1));
             var e = gameManager.entitys.indexOf(this)
             gameManager.entitys.splice(e, 1);
             gameManager.score += 1;
-            //console.log(e);
-            console.log(gameManager.entitys.length);
-            if(gameManager.entitys.length <= 2) {                
+            if (gameManager.entitys.length <= 2) {
                 gameManager.lvlUp();
-                
             }
         }
-        
+
     }
 
 }

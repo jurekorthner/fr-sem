@@ -3,9 +3,10 @@ class GameManager {
         this.entitys = new Array();
         this.started = false;
         this.ended = false;
-        this.level = 2;
+        this.level = 1;
         this.score = 0;
         this.health = health;
+        this.mouseInput = false;
     }
 
     register(e) {
@@ -15,12 +16,12 @@ class GameManager {
     setup() {
         player = new Player(
             new p5.Vector((windowWidth / 2) - (75 / 2), windowHeight * 0.88),
-            new p5.Vector(120, 15),
+            new p5.Vector(clamp(128 - this.level * 8, 40, 120), 15),
             paddelImg);
 
-        ball = new Ball(new p5.Vector(windowWidth / 2, windowHeight * 0.5),
+        ball = new Ball(new p5.Vector(windowWidth / 2 + 15, windowHeight * 0.8),
             new p5.Vector(30, 30),
-            new p5.Vector(random(-0.1, 0.1), -7),
+            new p5.Vector(random(-0.1, 0.1), -6 - 0.4 * gameManager.level),
             ballImg);
 
         this.register(player);
@@ -35,11 +36,11 @@ class GameManager {
         var padding = (windowWidth - nX * 85) / 2;
 
 
-        for (var i = 0; i < nX; i++) { 
-            var n = 0;           
-            for (var k = 0; k < this.level + 2; k++) {
-                if(n >= 10) n = 0;
-                console.log("123")
+        for (var i = 0; i < nX; i++) {
+            console.log((height - 75 - 230) / 28);
+            var n = 0;
+            for (var k = 0; k < clamp(this.level + 2, 1, (height - 75 - 300) / 28); k++) {
+                if (n >= 10) n = 0;
                 var tile = new Tile(new p5.Vector(padding + i * spacing, 95 + k * 36), new p5.Vector(75, 28), uiManager.tileImgs[n], k);
                 n++;
 
@@ -77,16 +78,16 @@ class GameManager {
     reset() {
         player.position = new p5.Vector((windowWidth / 2) - (75 / 2), windowHeight * 0.88);
 
-        ball.position = new p5.Vector(windowWidth / 2, windowHeight * 0.5);
-        ball.velocity = new p5.Vector(0, -5);
+        ball.position = new p5.Vector(windowWidth / 2 + 15, windowHeight * 0.8);
+        ball.velocity = new p5.Vector(random(-0.1, 0.1), -6 - 0.4 * gameManager.level)
 
         //this.setup();
     }
 
     lvlUp() {
         this.entitys = [];
-        this.setup();
         this.level++;
+        this.setup();
     }
 
 
@@ -116,7 +117,7 @@ class Entity {
     }
 }
 
-class UIManager {   
+class UIManager {
     constructor() {
         this.tileImgs = new Array();
         this.font = loadFont('src/ps.ttf');
@@ -141,6 +142,27 @@ class UIManager {
     }
 
     draw() {
+        noSmooth();
+
+        stroke(200);
+        strokeWeight(3);
+        fill(50)
+        rect(0, 0, width, 75)
+        noStroke();
+
+        fill(255);
+        textSize(26);
+        text(pad(gameManager.score, 5), width - 150, 50 / 2, 100, 50)
+
+        textSize(16)
+        text(gameManager.mouseInput ? "Mouse" : "Keyboard", 250, 50 / 2, 100, 50);
+
+        for (var i = 0; i < gameManager.health; i++) {
+            fill("red");
+            noStroke();
+
+            image(heartImg, 20 + i * 75, 20, 40, 40)
+        }
 
     }
 }
