@@ -22,7 +22,7 @@ function preload() {
 function setup() {
   noSmooth();
   noCursor();
-  collideDebug(true);  
+  collideDebug(true);
 
   let canvas = createCanvas(windowWidth, windowHeight);
   canvas.position(0, 0);
@@ -36,31 +36,30 @@ function setup() {
 function draw() {
   background(30);
 
-  if (gameManager.health <= 0) {
-    gameManager.end()
-  }
-
   gameManager.tick();
   gameManager.phys();
   gameManager.draw();
   uiManager.draw();
 
+  if (gameManager.health <= 0) {
+    if (!gameManager.ended) gameManager.end();    
+
+  }
+
 }
 
 function keyPressed() {
   requestPointerLock()
-  console.log(gameManager.mouseInput);
-  if (!this.ended) {
+  if (!gameManager.ended) {
     gameManager.started = true;
   }
-  if(gameManager.started && keyCode === 77) { // M key
-    console.log("123")
+  if (gameManager.started && keyCode === 77) { // M key    
     gameManager.mouseInput = gameManager.mouseInput ? false : true;
   }
 }
 
 function pad(num, size) {
-  var s = "000000" + num;
+  var s = "0000000000" + num;
   return s.substr(s.length - size);
 }
 

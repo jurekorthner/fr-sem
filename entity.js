@@ -37,7 +37,6 @@ class GameManager {
 
 
         for (var i = 0; i < nX; i++) {
-            console.log((height - 75 - 230) / 28);
             var n = 0;
             for (var k = 0; k < clamp(this.level + 2, 1, (height - 75 - 300) / 28); k++) {
                 if (n >= 10) n = 0;
@@ -94,7 +93,7 @@ class GameManager {
     end() {
         this.ended = true;
         this.started = false;
-        console.log("ended!")
+        noLoop();
     }
 }
 
@@ -143,9 +142,6 @@ class UIManager {
 
     draw() {
         noSmooth();
-
-        stroke(200);
-        strokeWeight(3);
         fill(50)
         rect(0, 0, width, 75)
         noStroke();
@@ -155,13 +151,25 @@ class UIManager {
         text(pad(gameManager.score, 5), width - 150, 50 / 2, 100, 50)
 
         textSize(16)
-        text(gameManager.mouseInput ? "Mouse" : "Keyboard", 250, 50 / 2, 100, 50);
+        text(gameManager.mouseInput ? "Mouse" : "Keyboard", width * 0.6, 50 / 2, 100, 50);
+        textSize(8);
+        text("M -> toggle", width * 0.6, 50 / 2 + 30, 100, 50);
+
 
         for (var i = 0; i < gameManager.health; i++) {
             fill("red");
             noStroke();
 
-            image(heartImg, 20 + i * 75, 20, 40, 40)
+            image(heartImg, 20 + i * 60, 20, 40, 40)
+        }
+        if (gameManager.ended) {
+            clear();
+            fill(120);
+            background(40);
+            textSize(48);
+            text("Game Over!", width / 2 - 48 / 2, height / 2 - 48 / 2);
+            textSize(30);
+            text("Score: " + pad(gameManager.score, 5), width / 2 - 48 / 2 + 40, height / 2 + 30);
         }
 
     }

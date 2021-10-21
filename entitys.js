@@ -1,7 +1,8 @@
 class Player extends Entity {
     constructor(position, size, img) {
         super(position, size);
-        this.img = img;       
+        this.img = img;
+        this.drag = 0;
     }
 
     preload() {
@@ -10,13 +11,16 @@ class Player extends Entity {
     }
 
     tick() {
+        var lastPos = this.position.x;
         this.size.x = clamp(128 - gameManager.level * 8, 40, 120);
 
         if (keyIsDown(RIGHT_ARROW) && !(this.position.x + this.size.x > width)) this.position.x += 10 + gameManager.level * 2;
-        if (keyIsDown(LEFT_ARROW) && !(this.position.x < 0)) this.position.x -= 10 + gameManager.level * 2;        
-        
-        if(gameManager.mouseInput) this.position.x += movedX;        
+        if (keyIsDown(LEFT_ARROW) && !(this.position.x < 0)) this.position.x -= 10 + gameManager.level * 2;
 
+        if (gameManager.mouseInput) this.position.x += movedX;
+        this.position.x = clamp(this.position.x, 0, width - this.size.x)
+
+        this.drag = this.position.x - lastPos;
     }
 
     draw() {
@@ -62,16 +66,18 @@ class Ball extends Entity {
             this.velocity.x *= -1;
         }
 
-        //Paddel collision
+        //Paddel collision        
+        // Top
         if (collideLineCircle(player.position.x, player.position.y, player.position.x + player.size.x, player.position.y, this.position.x, this.position.y, this.size.x)) {
             this.velocity.reflect(new p5.Vector(0, 1));
-            this.velocity.rotate(0.2);
-        }
+            this.velocity.rotate(random(-0.1 + player.drag / 12 / 5, 0.1));            
+        }              
 
-        if (collideRectCircle(0, height * 0.95, width, height, this.position.x, this.position.y, this.size.x)) {
-            console.log("collideRectCircle");
-            //gameManager.health--;
-            //gameManager.reset();
+
+        // Dead zone collision
+        if (collideRectCircle(0, height * 0.95, width, height, this.position.x, this.position.y, this.size.x)) {           
+            gameManager.health--;
+            gameManager.reset();
         }
 
 
@@ -83,11 +89,10 @@ class Tile extends Entity {
     constructor(position, size, img, row) {
         super(position, size);
         this.img = img;
-        this.row = row;
+        this.row = row;        
     }
-    draw() {
-        //tint(this.row * 10);
-        image(this.img, this.position.x, this.position.y, this.size.x, this.size.y);
+    draw() {        
+        image(this.img, this.position.x, this.position.y, this.size.x, this.size.y);        
     }
 
     phys() {
