@@ -7,6 +7,7 @@ class GameManager {
         this.score = 0;
         this.health = health;
         this.mouseInput = false;
+        this.god = false;
     }
 
     register(e) {
@@ -94,6 +95,10 @@ class GameManager {
         this.ended = true;
         this.started = false;
         noLoop();
+    }
+
+    godMode() {
+        this.god = true;
     }
 }
 

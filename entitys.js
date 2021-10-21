@@ -75,7 +75,8 @@ class Ball extends Entity {
 
 
         // Dead zone collision
-        if (collideRectCircle(0, height * 0.95, width, height, this.position.x, this.position.y, this.size.x)) {           
+        if (collideRectCircle(0, height * 0.95, width, height, this.position.x, this.position.y, this.size.x)) {
+            if(gameManager.god) return;           
             gameManager.health--;
             gameManager.reset();
         }
